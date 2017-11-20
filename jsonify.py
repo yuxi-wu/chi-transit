@@ -4,14 +4,16 @@ import csv
 import json
 import random
 
-ROWTYPES = {'neighbourhood': str,
-            'zhvi': int,
-            'side': str}
+ROWTYPES = {'regionID': str,
+            'neighbourhood': str,
+            'jul_13': int,
+            'sept_17': int,
+            'rawchange': int,
+            'pctchange': float}
 
 def jsonify_csv(csvfile, jsonfile):
     with open(csvfile) as f:
         reader = csv.DictReader(f)
-        reader = random.sample(list(reader),30)
 
         jsonfile = open(jsonfile, 'w')
         jsonfile.write('[')
@@ -20,3 +22,5 @@ def jsonify_csv(csvfile, jsonfile):
             json.dump(row_converted, jsonfile)
             jsonfile.write(',\n')
         jsonfile.write(']')
+
+
