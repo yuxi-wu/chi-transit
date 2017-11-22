@@ -9,7 +9,9 @@ ROWTYPES = {'regionID': str,
             'jul_13': int,
             'sept_17': int,
             'rawchange': int,
-            'pctchange': float}
+            'pctchange': float,
+            'row': int,
+            'col':int}
 
 def jsonify_csv(csvfile, jsonfile):
     with open(csvfile) as f:
@@ -22,5 +24,3 @@ def jsonify_csv(csvfile, jsonfile):
             json.dump(row_converted, jsonfile)
             jsonfile.write(',\n')
         jsonfile.write(']')
-
-

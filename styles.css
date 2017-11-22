@@ -18,12 +18,12 @@ p {text-indent: 50px;
     font-style: italic;}
 
 svg {
-  background-color: white;
+  background-color: grey;
 }
 
 rect.tiles {
   stroke: #FEF0D9;
-  stroke-width:3px;
+  stroke-width:1px;
 }
 
 text.yearLabel,
