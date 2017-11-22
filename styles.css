@@ -1,0 +1,35 @@
+@import url('https://fonts.googleapis.com/css?family=Raleway:300,300i,900i');
+
+h2 {text-indent: 50px;
+    font-family: 'Raleway', sans-serif;
+    font-style: italic;
+    font-size: 24px;}
+
+p {text-indent: 50px;
+    font-family: 'Raleway', sans-serif;}
+    svg {background-color: blanchedalmond;}
+    .bar {fill: dodgerblue;}
+    .north {fill: dodgerblue;}
+    .south {fill: maroon;}
+    .central {fill: slategrey;}
+    .west {fill: goldenrod;}
+
+#labeling {font-family: 'Raleway', sans-serif;
+    font-style: italic;}
+
+svg {
+  background-color: white;
+}
+
+rect.tiles {
+  stroke: #FEF0D9;
+  stroke-width:3px;
+}
+
+text.yearLabel,
+text.monthLabel,
+text.legendLabel {
+  font-size: 12pt;
+  font-family: Consolas, courier;
+  fill: #888;
+}
