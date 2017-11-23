@@ -1,9 +1,7 @@
 
 var margin = { top: 50, right: 0, bottom: 100, left: 0 };
-var width = 1300 - margin.left - margin.right;
+var width = 1300;
 var height = 700 - margin.top - margin.bottom;
-var gridSize = Math.floor(width / 55);
-legendElementWidth = gridSize*2;
 var colours = ['#d73027','#fc8d59','#fee08b','#ffffbf','#d9ef8b','#91cf60','#1a9850'];
 
 d3.json("housingchanges.json", function(error, data){
@@ -37,17 +35,19 @@ function createHeatTiles(){
         .range(colours);
 
     var tiles = g.selectAll(".tiles")
-      .data(dataset)
-      .enter()
-      .append("rect")
-      .attr("class", "tiles")
-      .attr("x", function(d){ return xScale(d.col)})
-      .attr("y", function(d){ return yScale(d.row)})
-      .attr("rx", 2)
-      .attr("ry", 2)
-      .attr("width", 20)
-      .attr("height", 20)
-      .style("fill", function(d){ return colorScale(d.pctchange)});
+        .data(dataset)
+        .enter()
+        .append("svg:rect")
+        .attr("class", "tiles")
+        .attr("x", function(d){ return xScale(d.col)})
+        .attr("y", function(d){ return yScale(d.row)})
+        .attr("rx", 2)
+        .attr("ry", 2)
+        .attr("width", 20)
+        .attr("height", 20)
+        .style("fill", function(d){ return colorScale(d.pctchange)})
+        .append("svg:title")
+        .text(function(d) {return d.neighbourhood; });
 
     var colLegend = g.selectAll(".legend")
         .data(colorScale.quantiles(), function(d) { return d; })

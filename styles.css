@@ -8,11 +8,6 @@ h2 {text-indent: 50px;
 p {text-indent: 50px;
     font-family: 'Raleway', sans-serif;}
     svg {background-color: blanchedalmond;}
-    .bar {fill: dodgerblue;}
-    .north {fill: dodgerblue;}
-    .south {fill: maroon;}
-    .central {fill: slategrey;}
-    .west {fill: goldenrod;}
 
 #labeling {font-family: 'Raleway', sans-serif;
     font-style: italic;}
@@ -22,7 +17,7 @@ svg {
 }
 
 rect.tiles {
-  stroke: #FEF0D9;
+  stroke: grey;
   stroke-width:1px;
 }
 
