@@ -46,6 +46,12 @@ function createHeatTiles(){
         .attr("width", 20)
         .attr("height", 20)
         .style("fill", function(d){ return colorScale(d.pctchange)})
+        .on('mouseover', function(d, i){
+            d3.select(this).style('stroke', 'black').style('stroke-width',2);
+        })
+        .on('mouseout', function(d, i) {
+            d3.selectAll('.tiles').style('stroke','white');
+        })
         .append("svg:title")
         .text(function(d) {return d.neighbourhood; });
 

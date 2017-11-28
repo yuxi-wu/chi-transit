@@ -13,13 +13,13 @@ p {text-indent: 50px;
     font-style: italic;}
 
 svg {
-  background-color: grey;
+  background-color: white;
 }
 
-rect.tiles {
+/*rect.tiles {
   stroke: grey;
   stroke-width:1px;
-}
+}*/
 
 text.yearLabel,
 text.monthLabel,
