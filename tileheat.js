@@ -9,12 +9,33 @@ d3.json("housingchanges.json", function(error, data){
         createHeatTiles();
     });
 
-function createHeatTiles(){
+d3.json("chi.json",function(error, data){
+        nMap = data;{
+        };
+    });
 
-    var svg = d3.select("#chart")
-        .append("svg")
-        .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom);
+var nest = d3.nest
+    .key(function(d) {
+        return d.subject;
+        })
+    .key(function(d) {
+        return d.year;
+        })
+    .entries(nMap)
+
+var svg = d3.select("#chart")
+    .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .style("position", "top");
+
+var nSvg = d3.select("#chart")
+    .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .style("position", "bottom");
+
+function createHeatTiles(){
 
     var g = svg.append("g")
         .append("g")
@@ -53,7 +74,10 @@ function createHeatTiles(){
             d3.selectAll('.tiles').style('stroke','white');
         })
         .append("svg:title")
-        .text(function(d) {return d.neighbourhood; });
+        .text(function(d) {return d.neighbourhood; })
+        .on('click', function(d) {
+            updateNMap(d.neighbourhood)
+        });
 
     var colLegend = g.selectAll(".legend")
         .data(colorScale.quantiles(), function(d) { return d; })
@@ -65,4 +89,44 @@ function createHeatTiles(){
         .attr("width", ((width * 2/3)/6))
         .attr("height", 10)
         .style("fill", function(d, i) { return colours[i]; });
+};
+
+mapboxgl.accessToken = 'pk.eyJ1IjoieXV4aS13dSIsImEiOiJjamFrOXN6dTAyaHBrMnFvaXF3a3gwa3lzIn0.cnlEO-8mEol5nDREoHY96A';
+var map = new mapboxgl.Map({
+    container: 'chart',
+    style: 'mapbox://styles/mapbox/streets-v9',
+    center: [-87.6298, 41.8781],
+    zoom: 10
+});
+
+function updateNMap(region){
+
+    var n = svg.data(nMap, function(d, i){
+        if (d.features.properties.Name == region) { return d.features.properties.Geometry; }
+    });
+
+    document.write(n);
+    map.on('load', function () {
+            map.data(nMap)
+            .on('load', function() {
+                map.addLayer({
+                    'id': region,
+                    'type': 'fill',
+                    'source': {
+                        'type': 'geojson',
+                        'data': {
+                            'type': 'Feature',
+                            'geometry': n,
+                            'layout': {},
+                            'paint': {
+                                'fill-color': '#088',
+                                'fill-opacity': 0.8
+                                }
+                            }
+                        }
+                    })
+                })
+            });
+
+
 };

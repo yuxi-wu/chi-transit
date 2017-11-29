@@ -16,11 +16,6 @@ svg {
   background-color: white;
 }
 
-/*rect.tiles {
-  stroke: grey;
-  stroke-width:1px;
-}*/
-
 text.yearLabel,
 text.monthLabel,
 text.legendLabel {
@@ -28,3 +23,5 @@ text.legendLabel {
   font-family: Consolas, courier;
   fill: #888;
 }
+
+#nmap { position:absolute; top:-650; bottom:0; width:100%; }
