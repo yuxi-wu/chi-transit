@@ -1,7 +1,7 @@
 
-var margin = { top: 2, right: 0, bottom: 100, left: 50 };
+var margin = { top: 2, right: 0, bottom: 100, left: 100 };
 var width = 300;
-var height = 1300 - margin.top - margin.bottom;
+var height = 790 - margin.top - margin.bottom;
 var colours = ['#d73027','#fc8d59','#fee08b','#ffffbf','#d9ef8b','#91cf60','#1a9850'];
 
 d3.csv("housingchanges.csv", function(error, data){
@@ -16,16 +16,17 @@ d3.json("chi.json",function(error, data){
 
 var svg = d3.select("#chart")
     .append("svg")
-    .attr("width", width)
-    .attr("height", height + margin.top + margin.bottom);
+    .attr("width", 300)
+    .attr("height", height)
+    .style("float","left");
 
 var nSvg = d3.select("#chart")
     .append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom);
+    .attr("width", 500)
+    .attr("height", height)
+    .style("float","right");
 
 function createHeatTiles(){
-
     var g = svg.append("g")
         .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
