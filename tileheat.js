@@ -24,7 +24,8 @@ var nSvg = d3.select("#chart")
     .append("svg")
     .attr("width", 500)
     .attr("height", height)
-    .style("float","right");
+    .style("float","right")
+    .style("margin.right",300);
 
 function createHeatTiles(){
     var g = svg.append("g")
@@ -95,7 +96,6 @@ function updateNMap(region){
         if (d.features.properties.Name == region) { return d.features.properties.Geometry; }
     });
 
-    document.write(n);
     map.on('load', function () {
             map.data(nMap)
             .on('load', function() {
