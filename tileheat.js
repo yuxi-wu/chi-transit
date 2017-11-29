@@ -1,10 +1,10 @@
 
-var margin = { top: 50, right: 0, bottom: 100, left: 0 };
-var width = 1300;
-var height = 700 - margin.top - margin.bottom;
+var margin = { top: 2, right: 0, bottom: 100, left: 50 };
+var width = 300;
+var height = 1300 - margin.top - margin.bottom;
 var colours = ['#d73027','#fc8d59','#fee08b','#ffffbf','#d9ef8b','#91cf60','#1a9850'];
 
-d3.json("housingchanges.json", function(error, data){
+d3.csv("housingchanges.csv", function(error, data){
         dataset = data;
         createHeatTiles();
     });
@@ -14,26 +14,15 @@ d3.json("chi.json",function(error, data){
         };
     });
 
-var nest = d3.nest
-    .key(function(d) {
-        return d.subject;
-        })
-    .key(function(d) {
-        return d.year;
-        })
-    .entries(nMap)
-
 var svg = d3.select("#chart")
     .append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
-    .style("position", "top");
+    .attr("width", width)
+    .attr("height", height + margin.top + margin.bottom);
 
 var nSvg = d3.select("#chart")
     .append("svg")
     .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
-    .style("position", "bottom");
+    .attr("height", height + margin.top + margin.bottom);
 
 function createHeatTiles(){
 
@@ -43,11 +32,11 @@ function createHeatTiles(){
 
     var xScale = d3.scaleLinear()
         .domain(d3.extent(dataset, function(d){ return d.col; }))
-        .range([0,width])
+        .range([0,85])
         .nice();
     var yScale = d3.scaleLinear()
         .domain(d3.extent(dataset, function(d){ return d.row; }))
-        .range([60,0])
+        .range([0,100])
         .nice();
 
     var colorScale = d3.scaleQuantile()
@@ -64,8 +53,8 @@ function createHeatTiles(){
         .attr("y", function(d){ return yScale(d.row)})
         .attr("rx", 2)
         .attr("ry", 2)
-        .attr("width", 20)
-        .attr("height", 20)
+        .attr("width", 40)
+        .attr("height", 10)
         .style("fill", function(d){ return colorScale(d.pctchange)})
         .on('mouseover', function(d, i){
             d3.select(this).style('stroke', 'black').style('stroke-width',2);
@@ -79,7 +68,7 @@ function createHeatTiles(){
             updateNMap(d.neighbourhood)
         });
 
-    var colLegend = g.selectAll(".legend")
+    /*var colLegend = g.selectAll(".legend")
         .data(colorScale.quantiles(), function(d) { return d; })
         .enter().append("g");
 
@@ -88,7 +77,7 @@ function createHeatTiles(){
         .attr("y", 100)
         .attr("width", ((width * 2/3)/6))
         .attr("height", 10)
-        .style("fill", function(d, i) { return colours[i]; });
+        .style("fill", function(d, i) { return colours[i]; });*/
 };
 
 mapboxgl.accessToken = 'pk.eyJ1IjoieXV4aS13dSIsImEiOiJjamFrOXN6dTAyaHBrMnFvaXF3a3gwa3lzIn0.cnlEO-8mEol5nDREoHY96A';
