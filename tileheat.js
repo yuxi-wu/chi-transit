@@ -10,8 +10,11 @@ d3.csv("housingchanges.csv", function(error, data){
     });
 
 d3.json("chi.json",function(error, data){
-        nMap = data;{
-        };
+        nMap = data.features;
+    });
+
+d3.csv("centroids.csv",function(error, data){
+        centroids = data;
     });
 
 var svg = d3.select("#chart")
@@ -19,13 +22,6 @@ var svg = d3.select("#chart")
     .attr("width", 300)
     .attr("height", height)
     .style("float","left");
-
-var nSvg = d3.select("#chart")
-    .append("svg")
-    .attr("width", 500)
-    .attr("height", height)
-    .style("float","right")
-    .style("margin.right",300);
 
 function createHeatTiles(){
     var g = svg.append("g")
@@ -58,17 +54,23 @@ function createHeatTiles(){
         .attr("width", 40)
         .attr("height", 10)
         .style("fill", function(d){ return colorScale(d.pctchange)})
-        .on('mouseover', function(d, i){
+        .on('mouseover', function(d){
             d3.select(this).style('stroke', 'black').style('stroke-width',2);
         })
-        .on('mouseout', function(d, i) {
+        .on('click', function(d) {
+            zoomNMap(d.neighbourhood);
+        })
+        .on('mouseout', function(d) {
             d3.selectAll('.tiles').style('stroke','white');
         })
         .append("svg:title")
-        .text(function(d) {return d.neighbourhood; })
-        .on('click', function(d) {
-            updateNMap(d.neighbourhood)
-        });
+        .text(function(d) {return d.neighbourhood; });
+
+
+    tiles.data(dataset)
+        .enter()
+        .on('click', function(d){highlightMap();})
+        .on('click', function(d) {zoomNMap(d.neighbourhood);});
 
     /*var colLegend = g.selectAll(".legend")
         .data(colorScale.quantiles(), function(d) { return d; })
@@ -83,40 +85,57 @@ function createHeatTiles(){
 };
 
 mapboxgl.accessToken = 'pk.eyJ1IjoieXV4aS13dSIsImEiOiJjamFrOXN6dTAyaHBrMnFvaXF3a3gwa3lzIn0.cnlEO-8mEol5nDREoHY96A';
-var map = new mapboxgl.Map({
-    container: 'chart',
-    style: 'mapbox://styles/mapbox/streets-v9',
-    center: [-87.6298, 41.8781],
-    zoom: 10
-});
 
-function updateNMap(region){
+function zoomNMap(region){
 
-    var n = svg.data(nMap, function(d, i){
-        if (d.features.properties.Name == region) { return d.features.properties.Geometry; }
+    for (n in nMap){
+        if (nMap[n].properties.Name){
+            if (nMap[n].properties.Name == region){
+                var neighGeo = nMap[n].geometry.coordinates;
+                console.log(neighGeo);
+            };
+        };
+    };
+
+    for (c in centroids){
+        if (centroids[c].region == region){
+            var lat = parseFloat(centroids[c].lat),
+                lng = parseFloat(centroids[c].lng);
+            var neighCent = [lat, lng];
+        }
+    };
+
+    console.log(neighCent);
+
+    var map = new mapboxgl.Map({
+        container: 'chart',
+        style: 'mapbox://styles/mapbox/streets-v9',
+        center: neighCent,
+        zoom: 13
     });
 
-    map.on('load', function () {
-            map.data(nMap)
-            .on('load', function() {
-                map.addLayer({
-                    'id': region,
-                    'type': 'fill',
-                    'source': {
-                        'type': 'geojson',
-                        'data': {
-                            'type': 'Feature',
-                            'geometry': n,
-                            'layout': {},
-                            'paint': {
-                                'fill-color': '#088',
-                                'fill-opacity': 0.8
-                                }
-                            }
-                        }
-                    })
-                })
-            });
 
+    map.on('load', function () {
+        map.addLayer({
+            'id': region,
+            'type': 'fill',
+            'source': {
+                'type': 'geojson',
+                'data': {
+                    'type': 'Feature',
+                    'geometry': {
+                        'type': 'Polygon',
+                        'coordinates': neighGeo
+                        }}},
+                    'layout': {},
+                    'paint': {
+                        'fill-color': '#088',
+                        'fill-opacity': 0.8
+                        }
+    })});
 
 };
+
+function highlightMap(region){
+
+}

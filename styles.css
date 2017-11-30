@@ -24,4 +24,8 @@ text.legendLabel {
   fill: #888;
 }
 
-#nmap { position:absolute; top:-650; bottom:0; width:100%; }
+#map {
+    float:right;
+    margin-top: 100;
+    margin-right: 100;
+    height: 788}
