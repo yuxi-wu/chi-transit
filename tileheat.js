@@ -92,7 +92,6 @@ function zoomNMap(region){
         if (nMap[n].properties.Name){
             if (nMap[n].properties.Name == region){
                 var neighGeo = nMap[n].geometry.coordinates;
-                console.log(neighGeo);
             };
         };
     };
@@ -101,7 +100,7 @@ function zoomNMap(region){
         if (centroids[c].region == region){
             var lat = parseFloat(centroids[c].lat),
                 lng = parseFloat(centroids[c].lng);
-            var neighCent = [lat, lng];
+            var neighCent = [lng, lat];
         }
     };
 
@@ -110,7 +109,7 @@ function zoomNMap(region){
     var map = new mapboxgl.Map({
         container: 'chart',
         style: 'mapbox://styles/mapbox/streets-v9',
-        center: neighCent,
+        center: Object.values(neighCent),
         zoom: 13
     });
 
@@ -129,7 +128,7 @@ function zoomNMap(region){
                         }}},
                     'layout': {},
                     'paint': {
-                        'fill-color': '#088',
+                        'fill-color': 'purple',
                         'fill-opacity': 0.8
                         }
     })});
