@@ -108,9 +108,9 @@ function zoomNMap(region){
 
     var map = new mapboxgl.Map({
         container: 'chart',
-        style: 'mapbox://styles/mapbox/streets-v9',
+        style: 'mapbox://styles/mapbox/light-v9',
         center: Object.values(neighCent),
-        zoom: 13
+        zoom: 14
     });
 
 
