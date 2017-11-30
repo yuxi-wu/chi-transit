@@ -10,8 +10,6 @@ d3.csv("housingchanges.csv", function(error, data){
     });
 
 d3.json("chi.json",function(error, data){
-        var flip = require("geojson-flip").flip;
-        data = flip(data);
         nMap = data.features;
     });
 
