@@ -112,7 +112,7 @@ function zoomNMap(region){
         center: Object.values(neighCent),
         zoom: 14
     });
-
+    console.log(neighGeo);
 
     map.on('load', function () {
         map.addLayer({
