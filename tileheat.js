@@ -56,6 +56,7 @@ function createHeatTiles(){
         .style("fill", function(d){ return colorScale(d.pctchange)})
         .on('mouseover', function(d){
             d3.select(this).style('stroke', 'black').style('stroke-width',2);
+            highlightMap(d.neighbourhood);
         })
         .on('click', function(d) {
             zoomNMap(d.neighbourhood);
@@ -65,12 +66,6 @@ function createHeatTiles(){
         })
         .append("svg:title")
         .text(function(d) {return d.neighbourhood; });
-
-
-    tiles.data(dataset)
-        .enter()
-        .on('click', function(d){highlightMap();})
-        .on('click', function(d) {zoomNMap(d.neighbourhood);});
 
     /*var colLegend = g.selectAll(".legend")
         .data(colorScale.quantiles(), function(d) { return d; })
@@ -85,25 +80,36 @@ function createHeatTiles(){
 };
 
 mapboxgl.accessToken = 'pk.eyJ1IjoieXV4aS13dSIsImEiOiJjamFrOXN6dTAyaHBrMnFvaXF3a3gwa3lzIn0.cnlEO-8mEol5nDREoHY96A';
+var mapbig = new mapboxgl.Map({
+    container: 'chart',
+    style: 'mapbox://styles/mapbox/light-v9',
+    center: [-87.6298,41.8781],
+    zoom: 11
+});
 
-function zoomNMap(region){
-
+function getRegionCoords(region){
     for (n in nMap){
         if (nMap[n].properties.Name){
             if (nMap[n].properties.Name == region){
-                var neighGeo = nMap[n].geometry.coordinates;
+                return nMap[n].geometry.coordinates;
             };
         };
     };
+};
 
+function getRegionCentroid(region){
     for (c in centroids){
         if (centroids[c].region == region){
             var lat = parseFloat(centroids[c].lat),
                 lng = parseFloat(centroids[c].lng);
-            var neighCent = [lng, lat];
+            return [lng, lat];
         }
     };
+};
 
+function zoomNMap(region){
+    var neighCent = getRegionCentroid(region);
+    var neighGeo = getRegionCoords(region);
     console.log(neighCent);
 
     var map = new mapboxgl.Map({
@@ -128,13 +134,34 @@ function zoomNMap(region){
                         }}},
                     'layout': {},
                     'paint': {
-                        'fill-color': 'purple',
-                        'fill-opacity': 0.8
+                        'fill-color': '#1E90FF',
+                        'fill-opacity': 0.2
                         }
     })});
 
 };
 
 function highlightMap(region){
+    var neighCent = getRegionCentroid(region);
+    var neighGeo = getRegionCoords(region);
+    console.log(neighCent);
 
-}
+    mapbig.on('load', function () {
+        mapbig.addLayer({
+            'id': region,
+            'type': 'fill',
+            'source': {
+                'type': 'geojson',
+                'data': {
+                    'type': 'Feature',
+                    'geometry': {
+                        'type': 'Polygon',
+                        'coordinates': neighGeo
+                        }}},
+                    'layout': {},
+                    'paint': {
+                        'fill-color': '#1E90FF',
+                        'fill-opacity': 0.2
+                        }
+    })});
+};
