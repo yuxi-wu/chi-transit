@@ -4,19 +4,20 @@ var width = 300;
 var height = 790 - margin.top - margin.bottom;
 var colours = ['#d73027','#fc8d59','#fee08b','#ffffbf','#d9ef8b','#91cf60','#1a9850'];
 
-d3.csv("housingchanges.csv", function(error, data){
+d3.csv("data/housingchanges.csv", function(error, data){
         dataset = data;
         createHeatTiles();
     });
 
-d3.json("chi.json",function(error, data){
+d3.json("data/chi.json",function(error, data){
         nMap = data.features;
     });
 
-d3.csv("centroids.csv",function(error, data){
+d3.csv("data/centroids.csv",function(error, data){
         centroids = data;
     });
 
+d3.
 var svg = d3.select("#chart")
     .append("svg")
     .attr("width", 300)
@@ -32,6 +33,7 @@ var map = new mapboxgl.Map({
     zoom: 11
 });
 
+//CREATE TILE MENU
 function createHeatTiles(){
     var g = svg.append("g")
         .append("g")
@@ -88,10 +90,12 @@ function createHeatTiles(){
         .style("fill", function(d, i) { return colours[i]; });*/
 };
 
+//PLOT DATA ON MAP
 function drawJourneys(){
 
 };
 
+//ZOOM/PAN TO NEIGHBOURHOOD
 function getRegionCoords(region){
     for (n in nMap){
         if (nMap[n].properties.Name){
