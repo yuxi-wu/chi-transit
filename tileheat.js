@@ -23,6 +23,15 @@ var svg = d3.select("#chart")
     .attr("height", height)
     .style("float","left");
 
+var chiCent = [-87.6298,41.8781];
+mapboxgl.accessToken = 'pk.eyJ1IjoieXV4aS13dSIsImEiOiJjamFrOXN6dTAyaHBrMnFvaXF3a3gwa3lzIn0.cnlEO-8mEol5nDREoHY96A';
+var map = new mapboxgl.Map({
+    container: 'chart',
+    style: 'mapbox://styles/mapbox/light-v9',
+    center: chiCent,
+    zoom: 11
+});
+
 function createHeatTiles(){
     var g = svg.append("g")
         .append("g")
@@ -79,13 +88,9 @@ function createHeatTiles(){
         .style("fill", function(d, i) { return colours[i]; });*/
 };
 
-mapboxgl.accessToken = 'pk.eyJ1IjoieXV4aS13dSIsImEiOiJjamFrOXN6dTAyaHBrMnFvaXF3a3gwa3lzIn0.cnlEO-8mEol5nDREoHY96A';
-var mapbig = new mapboxgl.Map({
-    container: 'chart',
-    style: 'mapbox://styles/mapbox/light-v9',
-    center: [-87.6298,41.8781],
-    zoom: 11
-});
+function drawJourneys(){
+
+};
 
 function getRegionCoords(region){
     for (n in nMap){
@@ -103,42 +108,46 @@ function getRegionCentroid(region){
             var lat = parseFloat(centroids[c].lat),
                 lng = parseFloat(centroids[c].lng);
             return [lng, lat];
-        }
+        };
     };
 };
 
+var prevID;
 function zoomNMap(region){
+    try {
+        map.removeSource(prevID);
+        map.removeLayer(prevID);
+    }
+    catch(err) {
+        //alert("Error!");
+    };
+
     var neighCent = getRegionCentroid(region);
     var neighGeo = getRegionCoords(region);
-    console.log(neighCent);
 
-    var map = new mapboxgl.Map({
-        container: 'chart',
-        style: 'mapbox://styles/mapbox/light-v9',
-        center: Object.values(neighCent),
-        zoom: 14
+    map.addSource(region, {
+        "type": "geojson",
+        "data": {
+            "type": "Feature",
+            "geometry": {
+                'type': 'Polygon',
+                'coordinates': neighGeo
+            }
+        }
     });
-    console.log(neighGeo);
 
-    map.on('load', function () {
-        map.addLayer({
-            'id': region,
-            'type': 'fill',
-            'source': {
-                'type': 'geojson',
-                'data': {
-                    'type': 'Feature',
-                    'geometry': {
-                        'type': 'Polygon',
-                        'coordinates': neighGeo
-                        }}},
-                    'layout': {},
-                    'paint': {
-                        'fill-color': '#1E90FF',
-                        'fill-opacity': 0.2
-                        }
-    })});
+    map.addLayer({'id': region,
+                'type': 'fill',
+                'source': region,
+                'layout': {},
+                'paint': {
+                    'fill-color': '#1E90FF',
+                    'fill-opacity': 0.2
+                    }
+        });
 
+    map.jumpTo({ 'center': neighCent, 'zoom': 14 });
+    prevID = region;
 };
 
 function highlightMap(region){
@@ -146,8 +155,8 @@ function highlightMap(region){
     var neighGeo = getRegionCoords(region);
     console.log(neighCent);
 
-    mapbig.on('load', function () {
-        mapbig.addLayer({
+    map.on('load', function () {
+        map.addLayer({
             'id': region,
             'type': 'fill',
             'source': {
