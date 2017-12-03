@@ -17,7 +17,6 @@ d3.csv("data/centroids.csv",function(error, data){
         centroids = data;
     });
 
-d3.
 var svg = d3.select("#chart")
     .append("svg")
     .attr("width", 300)
