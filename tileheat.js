@@ -20,7 +20,7 @@ d3.csv("data/centroids.csv",function(error, data){
 d3.csv("data/divvy13.csv",function(error, data){
     divvy13 = data;
     var len = Object.keys(divvy13).length
-    //drawAllJourneys(13);
+    drawAllJourneys(13, len);
 });
 
 d3.csv("data/divvystations13.csv",function(error, data){
@@ -91,7 +91,7 @@ function createHeatTiles(){
         .style("fill", function(d){ return colorScale(d.pctchange)})
         .on('mouseover', function(d){
             d3.select(this).style('stroke', 'black').style('stroke-width',2);
-            highlightMap(d.neighbourhood);
+            //highlightMap(d.neighbourhood);
         })
         .on('click', function(d) {
             zoomNMap(d.neighbourhood);
@@ -141,7 +141,7 @@ function drawAllJourneys(year, numItems){
         var sID = "routes17";
     };
 
-    var sample = journeys.slice(0,Math.floor(numItems/5));
+    var sample = journeys.slice(0,Math.floor(numItems/10));
 
     map.on("load", function(){
         if (!map.getSource(sID)){
@@ -163,7 +163,7 @@ function drawAllJourneys(year, numItems){
                 "paint": {
                     "line-color": colour,
                     "line-width": 1,
-                    "line-opacity": 0.025
+                    "line-opacity": 0.05
             }
         });};
     });
@@ -209,16 +209,36 @@ function getRegionCentroid(region){
         )[0];
     console.log([parseFloat(findRC.lat), parseFloat(findRC.lng)]);
 
-    return [parseFloat(findRC.lat), parseFloat(findRC.lng)];
-
-    /*for (c in centroids){
-        if (centroids[c].region == region){
-        var lat = parseFloat(centroids[c].lat),
-            lng = parseFloat(centroids[c].lng);
-            return [lng, lat];
-        };
-    };*/
+    return [parseFloat(findRC.lng), parseFloat(findRC.lat)];
 };
+/*
+function drawNeighOutlines(){
+    for (c in centroids){
+        region = centroids[c].region;
+        var neighGeo = getRegionCoords(region);
+        map.addSource(region, {
+            "type": "geojson",
+            "data": {
+                "type": "Feature",
+                "geometry": {
+                    'type': 'Polygon',
+                    'coordinates': neighGeo
+                }
+            }
+        });
+
+        map.addLayer({'id': region,
+                    'type': 'fill',
+                    'source': region,
+                    'layout': {},
+                    'paint': {
+                        'fill-color': 'red',
+                        'fill-opacity': 0.2
+                        }
+            });
+    };
+};*/
+
 
 var prevID;
 function zoomNMap(region){
@@ -245,20 +265,21 @@ function zoomNMap(region){
     });
 
     map.addLayer({'id': region,
-                'type': 'fill',
+                'type': 'line',
                 'source': region,
                 'layout': {},
                 'paint': {
-                    'fill-color': '#1E90FF',
-                    'fill-opacity': 0.2
+                    'line-color': '#2F4F4F',
+                    'line-opacity': 0.75,
+                    'line-width': 8
                     }
         });
 
-    map.jumpTo({ 'center': neighCent, 'zoom': 14 });
+    map.jumpTo({ 'center': neighCent, 'zoom': 15 });
     prevID = region;
 };
 
-function highlightMap(region){
+/*function highlightMap(region){
     var neighCent = getRegionCentroid(region);
     var neighGeo = getRegionCoords(region);
     console.log(neighCent);
@@ -281,4 +302,4 @@ function highlightMap(region){
                         'fill-opacity': 0.2
                         }
     })});
-};
+};*/
