@@ -139,12 +139,12 @@ function drawAllJourneys(year, numItems){
     if (year == 13){
         var journeys = divvy13;
         var colour = "blue";
-        var sID = "routes13";
+        var sID = "Divvy 2013";
     }
     else if (year == 17) {
         var journeys = divvy171;
         var colour = "purple";
-        var sID = "routes17";
+        var sID = "Divvy 2017";
     };
 
     var sample = journeys.slice(0,Math.floor(numItems/10));
@@ -310,7 +310,7 @@ function zoomNMap(region){
     })});
 };*/
 
-var toggleableLayerIds = [ 'routes13', 'routes17' ];
+var toggleableLayerIds = [ 'Divvy 2013', 'Divvy 2017' ];
 
 for (var i = 0; i < toggleableLayerIds.length; i++) {
     var id = toggleableLayerIds[i];
@@ -318,7 +318,7 @@ for (var i = 0; i < toggleableLayerIds.length; i++) {
     var link = document.createElement('a');
     link.href = '#';
     link.className = 'active';
-    link.textContent = "20".concat(id.slice(6,)).concat(" Divvy");
+    link.textContent = id;
 
     link.onclick = function (e) {
         var clickedLayer = this.textContent;
