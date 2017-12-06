@@ -310,32 +310,35 @@ function zoomNMap(region){
     })});
 };*/
 
-var toggleableLayerIds = [ 'Divvy 2013', 'Divvy 2017' ];
 
-for (var i = 0; i < toggleableLayerIds.length; i++) {
-    var id = toggleableLayerIds[i];
+// code from: https://www.mapbox.com/mapbox-gl-js/example/toggle-layers/
+function toggle(layerIDs){
+    for (var i = 0; i < layerIDs.length; i++) {
+        var id = layerIDs[i];
+        var link = document.createElement('a');
+        link.href = '#';
+        link.className = 'active';
+        link.textContent = id;
 
-    var link = document.createElement('a');
-    link.href = '#';
-    link.className = 'active';
-    link.textContent = id;
+        link.onclick = function (e) {
+            var clickedLayer = this.textContent;
+            e.preventDefault();
+            e.stopPropagation();
 
-    link.onclick = function (e) {
-        var clickedLayer = this.textContent;
-        e.preventDefault();
-        e.stopPropagation();
+            var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
 
-        var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
+            if (visibility === 'visible') {
+                map.setLayoutProperty(clickedLayer, 'visibility', 'none');
+                this.className = '';
+            } else {
+                this.className = 'active';
+                map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
+            };
+        };
 
-        if (visibility === 'visible') {
-            map.setLayoutProperty(clickedLayer, 'visibility', 'none');
-            this.className = '';
-        } else {
-            this.className = 'active';
-            map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
-        }
+        var layers = document.getElementById('menu');
+        layers.appendChild(link);
     };
+};
 
-    var layers = document.getElementById('menu');
-    layers.appendChild(link);
-}
+toggle(['Divvy 2013','Divvy 2017']);
