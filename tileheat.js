@@ -48,10 +48,16 @@ var svg = d3.select("#chart")
     .attr("height", height)
     .style("float","left");
 
+var mSvg = d3.select("#map")
+    .append("svg")
+    .attr("width", 700)
+    .attr("height", height)
+    .style("float","right");
+
 var chiCent = [-87.6298,41.8781];
 mapboxgl.accessToken = 'pk.eyJ1IjoieXV4aS13dSIsImEiOiJjamFrOXN6dTAyaHBrMnFvaXF3a3gwa3lzIn0.cnlEO-8mEol5nDREoHY96A';
 var map = new mapboxgl.Map({
-    container: 'chart',
+    container: 'map',
     style: 'mapbox://styles/mapbox/light-v9',
     center: chiCent,
     zoom: 11
@@ -275,7 +281,7 @@ function zoomNMap(region){
                     }
         });
 
-    map.jumpTo({ 'center': neighCent, 'zoom': 15 });
+    map.jumpTo({ 'center': neighCent, 'zoom': 14 });
     prevID = region;
 };
 
@@ -303,3 +309,33 @@ function zoomNMap(region){
                         }
     })});
 };*/
+
+var toggleableLayerIds = [ 'routes13', 'routes17' ];
+
+for (var i = 0; i < toggleableLayerIds.length; i++) {
+    var id = toggleableLayerIds[i];
+
+    var link = document.createElement('a');
+    link.href = '#';
+    link.className = 'active';
+    link.textContent = "20".concat(id.slice(6,)).concat(" Divvy");
+
+    link.onclick = function (e) {
+        var clickedLayer = this.textContent;
+        e.preventDefault();
+        e.stopPropagation();
+
+        var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
+
+        if (visibility === 'visible') {
+            map.setLayoutProperty(clickedLayer, 'visibility', 'none');
+            this.className = '';
+        } else {
+            this.className = 'active';
+            map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
+        }
+    };
+
+    var layers = document.getElementById('menu');
+    layers.appendChild(link);
+}
