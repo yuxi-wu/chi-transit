@@ -30,7 +30,6 @@ d3.csv("data/divvystations13.csv",function(error, data){
 d3.csv("data/divvy17Q1.csv",function(error, data){
     divvy171 = data;
     var len = Object.keys(divvy171).length
-    console.log(len);
     drawAllJourneys(17, len);
 });
 
@@ -42,17 +41,32 @@ d3.csv("data/divvystations17.csv",function(error, data){
     stations17 = data;
 });
 
-var svg = d3.select("#chart")
-    .append("svg")
-    .attr("width", 300)
-    .attr("height", height)
-    .style("float","left");
 
-var mSvg = d3.select("#map")
+d3.json("data/cta.json", function(error, data){
+    cta = data;
+    drawAllBuses();
+});
+
+var h = d3.select("#chart")
+    .append("svg")
+    .attr("width", 125)
+    .attr("height", height)
+    .style("float","left")
+    .style('margin-left',margin.left)
+    .style('margin-right',50);
+
+var m = d3.select("#map")
     .append("svg")
     .attr("width", 700)
     .attr("height", height)
     .style("float","right");
+
+var t = d3.select("#table")
+    .append("svg")
+    .attr("width", 350)
+    .attr("height", height)
+    .style("float","right")
+    .style('margin-right',50);
 
 var chiCent = [-87.6298,41.8781];
 mapboxgl.accessToken = 'pk.eyJ1IjoieXV4aS13dSIsImEiOiJjamFrOXN6dTAyaHBrMnFvaXF3a3gwa3lzIn0.cnlEO-8mEol5nDREoHY96A';
@@ -65,9 +79,9 @@ var map = new mapboxgl.Map({
 
 //CREATE TILE MENU
 function createHeatTiles(){
-    var g = svg.append("g")
-        .append("g")
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    var g = h.append("g")
+        .append("g");
+        //.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
     var xScale = d3.scaleLinear()
         .domain(d3.extent(dataset, function(d){ return d.col; }))
@@ -97,7 +111,7 @@ function createHeatTiles(){
         .style("fill", function(d){ return colorScale(d.pctchange)})
         .on('mouseover', function(d){
             d3.select(this).style('stroke', 'black').style('stroke-width',2);
-            //highlightMap(d.neighbourhood);
+            displayRegionName(d.neighbourhood);
         })
         .on('click', function(d) {
             zoomNMap(d.neighbourhood);
@@ -121,7 +135,12 @@ function createHeatTiles(){
 };
 
 
-//PLOT DATA ON MAP
+//DISPLAY REGION NAME AND TABLE
+function displayRegionName(region){
+
+}
+
+//PLOT DIVVY ON MAP
 function lookupStation(stationID, year){
     if (year == 13){
         stations = stations13;
@@ -151,27 +170,30 @@ function drawAllJourneys(year, numItems){
 
     map.on("load", function(){
         if (!map.getSource(sID)){
-        map.addSource(sID, {
-            "type": "geojson",
-            "data":{
-                "type": "FeatureCollection",
-                "features": gatherJourneys(sample, year)
-            }
-        });
-        map.addLayer({
-            "id": sID,
-            "type": "line",
-            "source": sID,
-            "layout": {
-                "line-join": "round",
-                "line-cap": "butt"
-                },
-                "paint": {
-                    "line-color": colour,
-                    "line-width": 1,
-                    "line-opacity": 0.05
-            }
-        });};
+            map.addSource(sID, {
+                "type": "geojson",
+                "data":{
+                    "type": "FeatureCollection",
+                    "features": gatherJourneys(sample, year)
+                }
+            });
+            map.addLayer({
+                "id": sID,
+                "type": "line",
+                "source": sID,
+                "layout": {
+                    "line-join": "round",
+                    "line-cap": "butt"
+                    },
+                    "paint": {
+                        "line-color": colour,
+                        "line-width": 1,
+                        "line-opacity": 0.05
+                    }
+                });
+
+            //map.setLayoutProperty(sID, 'visibility', 'none');
+            };
     });
 };
 
@@ -196,6 +218,37 @@ function gatherJourneys(data, year){
     };
     return paths;
 };
+
+//PLOT BUSES ON Map
+
+function drawAllBuses(){
+    map.on("load", function(){
+        console.log("adding buses");
+
+        console.log(cta);
+        map.addSource("buses", {
+            "type":"geojson",
+            "data":cta});
+
+        console.log("layer");
+
+        map.addLayer({
+            "id": "buses",
+            "type": "line",
+            "source": "buses",
+            "layout": {
+                "line-join": "round",
+                "line-cap": "butt"
+                },
+                "paint": {
+                    "line-color": "white",
+                "line-width": 3,
+                "line-opacity": 1
+                }
+        });
+    });
+};
+
 
 //ZOOM/PAN TO NEIGHBOURHOOD
 function getRegionCoords(region){
