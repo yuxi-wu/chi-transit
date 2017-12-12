@@ -63,10 +63,16 @@ var m = d3.select("#map")
 
 var t = d3.select("#table")
     .append("svg")
+	.attr("preserveAspectRatio", "xMinYMin meet")
+  	.attr("viewBox", "0 0 550 700")
     .attr("width", 350)
     .attr("height", height)
     .style("float","right")
     .style('margin-right',50);
+
+var tg1 = t.append("g")
+    .attr("transform", "translate(" + margin.left + "," + 50 + ")");
+
 
 var chiCent = [-87.6298,41.8781];
 mapboxgl.accessToken = 'pk.eyJ1IjoieXV4aS13dSIsImEiOiJjamFrOXN6dTAyaHBrMnFvaXF3a3gwa3lzIn0.cnlEO-8mEol5nDREoHY96A';
@@ -112,9 +118,13 @@ function createHeatTiles(){
         .on('mouseover', function(d){
             d3.select(this).style('stroke', 'black').style('stroke-width',2);
             displayRegionName(d.neighbourhood);
+            hidePanel();
+            showPanel(d);
         })
         .on('click', function(d) {
             zoomNMap(d.neighbourhood);
+            hidePanel();
+            showPanel(d);
         })
         .on('mouseout', function(d) {
             d3.selectAll('.tiles').style('stroke','white');
@@ -363,6 +373,70 @@ function zoomNMap(region){
     })});
 };*/
 
+//SHOW/HIDE PANEL
+function hidePanel() {
+	d3.select("#table").selectAll("text, path").remove();
+	d3.select('#table').classed('active', false)
+}
+
+function showPanel(region) {
+	d3.select('#table').classed('active', true)
+
+	/*// Exit button
+	var exit = tg1.append('image')
+		.attr('xlink:href', 'data/x.png')
+		.attr('width', 20)
+		.attr('height', 20)
+		.attr('transform', 'translate(' + (width) + " ," + 3 + ")")
+		.on('click', function(d) {
+			hidePanel();
+		//	active_school.classed('active', false);
+			map.setView(L.latLng(41.8256, -87.62), 11);
+		})
+		.on("mouseover", function(d) {
+			d3.select(this).style("cursor", "pointer");
+		})*/
+
+	// Fill in text info about selected school
+	var textFields = [[region.pctchange * 100 + '%', 'Change in Housing Prices: ']];
+
+	for (var i = 0; i < textFields.length; i++) {
+		tg1.append('text')
+			.attr('font-size', 20)
+			.attr("transform", "translate(" + 0 + " ," + (margin.top + 30*(i+2)) + ")")
+			.text(textFields[i][1] + '\r' + textFields[i][0])
+		};
+
+	/*tg1.append('text')
+		.attr('font-size', 20)
+		.style('fill', "#57b2a0")
+		.attr("transform", "translate(" + margin.left + " ," + (margin.top + 30*5) + ")")
+		.html("<a href=" + selection.schoolProfile + " target='_blank'>Link to school profile </a>")*/
+
+	// Break out long name into two lines if necessary
+	if (region.neighbourhood.length < 40) {
+		var nameSpliced = [region.neighbourhood]
+	} else {
+		var first_substring = region.neighbourhood.substring(0,35)
+		var splice_index = first_substring.lastIndexOf(' ')
+		var nameSpliced = [region.neighbourhood.substring(0,splice_index), region.neighbourhood.substring(splice_index + 1,)]
+	}
+
+	for (var i = 0; i < nameSpliced.length; i++) {
+	tg1.append('text')
+		.attr('font-size', 30)
+		.attr('font-weight', 'bold')
+		.style('fill', '#406f65')
+		.attr("transform", "translate(" + 0 + " ," + (30) + ")")
+		.text(nameSpliced[i])
+	}
+
+	// Additional text
+	tg1.append('text')
+		.attr('font-size', 16)
+		.attr("transform", "translate(" + 0 + " ," + (height - 30) + ")")
+		.text('Sources: Zillow, Divvy, and Chicago Data Portal/CTA')
+}
 
 // code from: https://www.mapbox.com/mapbox-gl-js/example/toggle-layers/
 function toggle(layerIDs){

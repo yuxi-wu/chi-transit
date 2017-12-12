@@ -14,7 +14,6 @@ p {text-indent: 50px;
 }*/
 
 #chart{
-    background-color: red;
     float: left;
     margin-top: 100;
     margin-right: 100;
@@ -27,14 +26,13 @@ p {text-indent: 50px;
 }
 
 #map {
-    background-color: blue;
     float:left;
     margin-top: 100;
     margin-right: 100;
     height: 788}
 
 #table {
-    background-color: yellow;
+    font-family: 'Raleway', sans-serif;
     float:left;
     margin-top: 100;
     margin-right: 100;
