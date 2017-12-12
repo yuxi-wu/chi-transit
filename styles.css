@@ -20,11 +20,6 @@ p {text-indent: 50px;
     height: 788
 }
 
-#chart svg.g.tiles {display: none;}
-#chart svg:hover{
-    display:;
-}
-
 #map {
     float:left;
     margin-top: 100;

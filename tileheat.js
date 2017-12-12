@@ -1,8 +1,8 @@
 
-var margin = { top: 2, right: 0, bottom: 100, left: 100 };
+var margin = { top: 2, right: 0, bottom: 100, left: 80 };
 var width = 300;
 var height = 790 - margin.top - margin.bottom;
-var colours = ['#d73027','#fc8d59','#fee08b','#ffffbf','#d9ef8b','#91cf60','#1a9850'];
+var colours = ['#ffffcc','#c7e9b4','#7fcdbb','#41b6c4','#2c7fb8','#253494'];
 
 d3.csv("data/housingchanges.csv", function(error, data){
         dataset = data;
@@ -57,7 +57,7 @@ var h = d3.select("#chart")
 
 var m = d3.select("#map")
     .append("svg")
-    .attr("width", 700)
+    .attr("width", 760)
     .attr("height", height)
     .style("float","right");
 
@@ -251,7 +251,7 @@ function drawAllBuses(){
                 "line-cap": "butt"
                 },
                 "paint": {
-                    "line-color": "white",
+                    "line-color": "red",
                 "line-width": 3,
                 "line-opacity": 1
                 }
@@ -397,45 +397,42 @@ function showPanel(region) {
 			d3.select(this).style("cursor", "pointer");
 		})*/
 
-	// Fill in text info about selected school
-	var textFields = [[region.pctchange * 100 + '%', 'Change in Housing Prices: ']];
+        // Break out long name into two lines if necessary
+    if (region.neighbourhood.length < 21) {
+        var nameSpliced = [region.neighbourhood]
+    } else {
+        var first_substring = region.neighbourhood.substring(0,20)
+        var splice_index = first_substring.lastIndexOf(' ')
+        var nameSpliced = [region.neighbourhood.substring(0,splice_index), region.neighbourhood.substring(splice_index + 1,)]
+    }
+
+    for (var i = 0; i < nameSpliced.length; i++) {
+    tg1.append('text')
+        .attr('font-size', 50)
+        .attr('font-weight', 'bold')
+        .style('fill', '#406f65')
+        .attr("transform", "translate(" + 0 + " ," + (50)*(i+1) + ")")
+        .text(nameSpliced[i])
+    }
+
+	var textFields = [[region.pctchange * 100 + '%', 'Change in Housing Prices ']];
 
 	for (var i = 0; i < textFields.length; i++) {
 		tg1.append('text')
 			.attr('font-size', 20)
-			.attr("transform", "translate(" + 0 + " ," + (margin.top + 30*(i+2)) + ")")
-			.text(textFields[i][1] + '\r' + textFields[i][0])
+			.attr("transform", "translate(" + 0 + " ," + (margin.top + 40*(i+3.5)) + ")")
+			.text(textFields[i][1]);
+        tg1.append('text')
+            .attr('font-size',40)
+            .attr("transform", "translate(" + 0 + " ," + (margin.top + 40*(i+4.5)) + ")")
+            .text(textFields[i][0]);
 		};
-
-	/*tg1.append('text')
-		.attr('font-size', 20)
-		.style('fill', "#57b2a0")
-		.attr("transform", "translate(" + margin.left + " ," + (margin.top + 30*5) + ")")
-		.html("<a href=" + selection.schoolProfile + " target='_blank'>Link to school profile </a>")*/
-
-	// Break out long name into two lines if necessary
-	if (region.neighbourhood.length < 40) {
-		var nameSpliced = [region.neighbourhood]
-	} else {
-		var first_substring = region.neighbourhood.substring(0,35)
-		var splice_index = first_substring.lastIndexOf(' ')
-		var nameSpliced = [region.neighbourhood.substring(0,splice_index), region.neighbourhood.substring(splice_index + 1,)]
-	}
-
-	for (var i = 0; i < nameSpliced.length; i++) {
-	tg1.append('text')
-		.attr('font-size', 30)
-		.attr('font-weight', 'bold')
-		.style('fill', '#406f65')
-		.attr("transform", "translate(" + 0 + " ," + (30) + ")")
-		.text(nameSpliced[i])
-	}
 
 	// Additional text
 	tg1.append('text')
-		.attr('font-size', 16)
+		.attr('font-size', 20)
 		.attr("transform", "translate(" + 0 + " ," + (height - 30) + ")")
-		.text('Sources: Zillow, Divvy, and Chicago Data Portal/CTA')
+		.text('Sources: Zillow, Divvy, Chicago Data Portal/CTA')
 }
 
 // code from: https://www.mapbox.com/mapbox-gl-js/example/toggle-layers/
