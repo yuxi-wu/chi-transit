@@ -1,17 +1,14 @@
 @import url('https://fonts.googleapis.com/css?family=Raleway:300,300i,900i');
 
-h2 {text-indent: 50px;
-    font-family: 'Raleway', sans-serif;
-    font-style: italic;
-    font-size: 24px;}
+h2 {font-family: 'Raleway', sans-serif;
+    font-size: 36px;
+    display:inline;
+    padding-left: 50px;}
 
 p {text-indent: 50px;
     font-family: 'Raleway', sans-serif;}
 
-/*svg {
-  background-color: white;
-  width: 500;
-}*/
+a {font-family: 'Raleway', sans-serif;}
 
 #chart{
     float: left;

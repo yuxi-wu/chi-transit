@@ -33,9 +33,11 @@ d3.csv("data/divvy17Q1.csv",function(error, data){
     drawAllJourneys(17, len);
 });
 
-d3.csv("data/divvy17Q2.csv",function(error, data){
+/*d3.csv("data/divvy17Q2.csv",function(error, data){
     divvy172 = data;
-});
+    var len = Object.keys(divvy172).length
+    drawAllJourneys(17, len);
+});*/
 
 d3.csv("data/divvystations17.csv",function(error, data){
     stations17 = data;
@@ -117,17 +119,15 @@ function createHeatTiles(){
         .style("fill", function(d){ return colorScale(d.pctchange)})
         .on('mouseover', function(d){
             d3.select(this).style('stroke', 'black').style('stroke-width',2);
-            displayRegionName(d.neighbourhood);
-            hidePanel();
-            showPanel(d);
-        })
-        .on('click', function(d) {
-            zoomNMap(d.neighbourhood);
             hidePanel();
             showPanel(d);
         })
         .on('mouseout', function(d) {
             d3.selectAll('.tiles').style('stroke','white');
+        })
+        .on('click', function(d) {
+            zoomNMap(d.neighbourhood);
+            showPanel(d);
         })
         .append("svg:title")
         .text(function(d) {return d.neighbourhood; });
@@ -144,11 +144,6 @@ function createHeatTiles(){
         .style("fill", function(d, i) { return colours[i]; });*/
 };
 
-
-//DISPLAY REGION NAME AND TABLE
-function displayRegionName(region){
-
-}
 
 //PLOT DIVVY ON MAP
 function lookupStation(stationID, year){
@@ -167,7 +162,7 @@ function lookupStation(stationID, year){
 function drawAllJourneys(year, numItems){
     if (year == 13){
         var journeys = divvy13;
-        var colour = "blue";
+        var colour = "dodgerblue";
         var sID = "Divvy 2013";
     }
     else if (year == 17) {
@@ -230,30 +225,29 @@ function gatherJourneys(data, year){
 };
 
 //PLOT BUSES ON Map
-
 function drawAllBuses(){
     map.on("load", function(){
         console.log("adding buses");
 
         console.log(cta);
-        map.addSource("buses", {
+        map.addSource("Bus Routes", {
             "type":"geojson",
             "data":cta});
 
         console.log("layer");
 
         map.addLayer({
-            "id": "buses",
+            "id": "Bus Routes",
             "type": "line",
-            "source": "buses",
+            "source": "Bus Routes",
             "layout": {
                 "line-join": "round",
                 "line-cap": "butt"
                 },
                 "paint": {
-                    "line-color": "red",
-                "line-width": 3,
-                "line-opacity": 1
+                    "line-color": "#31a354",
+                "line-width": 4,
+                "line-opacity": 0.4
                 }
         });
     });
@@ -339,8 +333,8 @@ function zoomNMap(region){
                 'layout': {},
                 'paint': {
                     'line-color': '#2F4F4F',
-                    'line-opacity': 0.75,
-                    'line-width': 8
+                    'line-opacity': 0.65,
+                    'line-width': 10
                     }
         });
 
@@ -348,56 +342,15 @@ function zoomNMap(region){
     prevID = region;
 };
 
-/*function highlightMap(region){
-    var neighCent = getRegionCentroid(region);
-    var neighGeo = getRegionCoords(region);
-    console.log(neighCent);
-
-    map.on('load', function () {
-        map.addLayer({
-            'id': region,
-            'type': 'fill',
-            'source': {
-                'type': 'geojson',
-                'data': {
-                    'type': 'Feature',
-                    'geometry': {
-                        'type': 'Polygon',
-                        'coordinates': neighGeo
-                        }}},
-                    'layout': {},
-                    'paint': {
-                        'fill-color': '#1E90FF',
-                        'fill-opacity': 0.2
-                        }
-    })});
-};*/
-
 //SHOW/HIDE PANEL
 function hidePanel() {
 	d3.select("#table").selectAll("text, path").remove();
 	d3.select('#table').classed('active', false)
-}
+};
 
 function showPanel(region) {
 	d3.select('#table').classed('active', true)
 
-	/*// Exit button
-	var exit = tg1.append('image')
-		.attr('xlink:href', 'data/x.png')
-		.attr('width', 20)
-		.attr('height', 20)
-		.attr('transform', 'translate(' + (width) + " ," + 3 + ")")
-		.on('click', function(d) {
-			hidePanel();
-		//	active_school.classed('active', false);
-			map.setView(L.latLng(41.8256, -87.62), 11);
-		})
-		.on("mouseover", function(d) {
-			d3.select(this).style("cursor", "pointer");
-		})*/
-
-        // Break out long name into two lines if necessary
     if (region.neighbourhood.length < 21) {
         var nameSpliced = [region.neighbourhood]
     } else {
@@ -415,7 +368,7 @@ function showPanel(region) {
         .text(nameSpliced[i])
     }
 
-	var textFields = [[region.pctchange * 100 + '%', 'Change in Housing Prices ']];
+	var textFields = [[parseFloat(region.pctchange * 100).toFixed(2) + '%', 'Change in Housing Prices ']];
 
 	for (var i = 0; i < textFields.length; i++) {
 		tg1.append('text')
@@ -428,7 +381,6 @@ function showPanel(region) {
             .text(textFields[i][0]);
 		};
 
-	// Additional text
 	tg1.append('text')
 		.attr('font-size', 20)
 		.attr("transform", "translate(" + 0 + " ," + (height - 30) + ")")
@@ -465,4 +417,4 @@ function toggle(layerIDs){
     };
 };
 
-toggle(['Divvy 2013','Divvy 2017']);
+toggle(['Divvy 2013','Divvy 2017','Bus Routes']);
